@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Cage Cashier Pay Calculator</title>
+<link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<div class="container">
+
+<div class="header">
+<h1>Pay Calculator</h1>
+
+<label>
+Service Rate:
+<select id="serviceRate">
+<option value="34.50">Commencement Rate ($34.50)</option>
+<option value="35.02">18 months – 4 years ($35.02)</option>
+<option value="35.54">4 years – 7 years ($35.54)</option>
+<option value="36.08">7+ years ($36.08)</option>
+</select>
+</label>
+
+</div>
+
+<table>
+
+<tr>
+<th></th>
+<th>Mon</th>
+<th>Tues</th>
+<th>Wed</th>
+<th>Thurs</th>
+<th>Fri</th>
+<th>Sat</th>
+<th>Sun</th>
+</tr>
+
+<tr>
+<th colspan="8">1st Week</th>
+</tr>
+
+<tr class="week1">
+<td>Shift</td>
+<td class="shift-cell"></td>
+<td class="shift-cell"></td>
+<td class="shift-cell"></td>
+<td class="shift-cell"></td>
+<td class="shift-cell"></td>
+<td class="shift-cell"></td>
+<td class="shift-cell"></td>
+</tr>
+
+<tr>
+<td>Weekly Total</td>
+<td colspan="7" id="week1Total">$0.00</td>
+</tr>
+
+<tr>
+<th colspan="8">2nd Week</th>
+</tr>
+
+<tr class="week2">
+<td>Shift</td>
+<td class="shift-cell"></td>
+<td class="shift-cell"></td>
+<td class="shift-cell"></td>
+<td class="shift-cell"></td>
+<td class="shift-cell"></td>
+<td class="shift-cell"></td>
+<td class="shift-cell"></td>
+</tr>
+
+<tr>
+<td>Weekly Total</td>
+<td colspan="7" id="week2Total">$0.00</td>
+</tr>
+
+<tr>
+<td><strong>Gross Total</strong></td>
+<td colspan="7" id="grossTotal">$0.00</td>
+</tr>
+
+</table>
+
+</div>
+
+<script src="paylogic.js"></script>
+
+</body>
+</html>
