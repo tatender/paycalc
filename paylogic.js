@@ -107,20 +107,20 @@ function isPublicHoliday(dateString){
 // CALCULATE PAY FOR ONE SHIFT
 // ----------------------------
 
-function calculateShiftPay(shift,rate,day){
+function calculateShiftPay(shift, rate, day){
 
- let pay=0
- let hoursWorked=0
+ let pay = 0
+ let hoursWorked = 0
 
- for(let h=shift.start;h<shift.end;h++){
+ for(let h = shift.start; h < shift.end; h += 1){
 
-  if(hoursWorked>=8) break
+  if(hoursWorked >= 8) break
 
-  const hour=h%24
+  const hour = Math.floor(h) % 24
 
-  const multiplier=getMultiplier(day,hour)
+  const multiplier = getMultiplier(day, hour)
 
-  pay+=rate*multiplier
+  pay += rate * multiplier
 
   hoursWorked++
 
@@ -184,5 +184,6 @@ function calculateTotals(){
  .innerText="$"+(week1+week2).toFixed(2)
 
 }
+
 
 
