@@ -150,7 +150,7 @@ function calculateTotals(){
 
    const shift=JSON.parse(select.value)
 
-   const day = index < 6 ? index + 1 : 0
+   const day = (index + 1) % 7
    const pay = calculateShiftPay(shift, rate, day)
 
    week1+=pay
@@ -166,7 +166,7 @@ function calculateTotals(){
 
    const shift=JSON.parse(select.value)
 
-   const day = index < 6 ? index + 1 : 0
+   const day = (index + 1) % 7
    const pay = calculateShiftPay(shift, rate, day)
 
    week2+=pay
@@ -174,7 +174,6 @@ function calculateTotals(){
 
  })
 
- // display totals
  document.getElementById("week1Total")
  .innerText="$"+week1.toFixed(2)
 
@@ -185,6 +184,7 @@ function calculateTotals(){
  .innerText="$"+(week1+week2).toFixed(2)
 
 }
+
 
 
 
