@@ -118,7 +118,7 @@ function calculateShiftPay(shift, rate, startDay) {
   // step through in 0.5 hour increments
   for (let h = 0; hoursWorked < 8 && h < (shift.end - shift.start); h += 0.5) {
     const absoluteHour = shift.start + h
-    const hour = Math.floor(absoluteHour) % 24
+    const hour = absoluteHour % 24
     const dayOffset = Math.floor(absoluteHour / 24)
     const currentDay = (startDay + dayOffset) % 7
 
@@ -185,6 +185,7 @@ function calculateTotals(){
  .innerText="$"+(week1+week2).toFixed(2)
 
 }
+
 
 
 
