@@ -65,12 +65,16 @@ document.getElementById("serviceRate")
 
 function getMultiplier(day,hour){
 
-// Sunday
-if(day===0){
+// Sat 20:00 → Mon 07:00
+if(
+ (day===6 && hour>=20) ||
+ day===0 ||
+ (day===1 && hour<7)
+){
  return 1.5
 }
 
-// Saturday
+// Saturday daytime
 if(day===6){
  if(hour>=7 && hour<19) return 1.25
  return 1.5
@@ -181,6 +185,7 @@ function calculateTotals(){
  .innerText="$"+(week1+week2).toFixed(2)
 
 }
+
 
 
 
