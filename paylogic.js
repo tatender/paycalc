@@ -63,6 +63,7 @@ shiftCells.forEach(cell=>{
  const hdCheckbox = document.createElement("input")
  hdCheckbox.type = "checkbox"
  hdCheckbox.classList.add("hd")
+ hdCheckbox.style.marginTop = "4px"
 
  hdCheckbox.addEventListener("change",calculateTotals)
 
@@ -169,7 +170,7 @@ function calculateTotals(){
  const rate=parseFloat(document.getElementById("serviceRate").value)
 
  // week1
-document.querySelectorAll(".week1 td")
+document.querySelectorAll(".week1 .shift-cell")
 .forEach((cell,index)=>{
 
  const select = cell.querySelector("select")
@@ -192,7 +193,7 @@ document.querySelectorAll(".week1 td")
 })
 
  // week2
-document.querySelectorAll(".week2 td")
+document.querySelectorAll(".week2 .shift-cell")
 .forEach((cell,index)=>{
 
  const select = cell.querySelector("select")
