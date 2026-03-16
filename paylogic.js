@@ -33,7 +33,12 @@ const shiftCells = document.querySelectorAll(".shift-cell")
 
 shiftCells.forEach(cell=>{
 
- const select=document.createElement("select")
+ const wrapper = document.createElement("div")
+ wrapper.style.display = "flex"
+ wrapper.style.flexDirection = "column"
+ wrapper.style.alignItems = "center"
+
+ const select = document.createElement("select")
 
  // RDO option
  const blank=document.createElement("option")
@@ -51,10 +56,25 @@ shiftCells.forEach(cell=>{
 
  select.addEventListener("change",calculateTotals)
 
- cell.appendChild(select)
+ // HD checkbox
+ const hdLabel = document.createElement("label")
+ hdLabel.style.fontSize = "12px"
+
+ const hdCheckbox = document.createElement("input")
+ hdCheckbox.type = "checkbox"
+ hdCheckbox.classList.add("hd")
+
+ hdCheckbox.addEventListener("change",calculateTotals)
+
+ hdLabel.appendChild(hdCheckbox)
+ hdLabel.append(" HD")
+
+ wrapper.appendChild(select)
+ wrapper.appendChild(hdLabel)
+
+ cell.appendChild(wrapper)
 
 })
-
 document.getElementById("serviceRate")
 .addEventListener("change",calculateTotals)
 
@@ -149,36 +169,50 @@ function calculateTotals(){
  const rate=parseFloat(document.getElementById("serviceRate").value)
 
  // week1
- document.querySelectorAll(".week1 select")
- .forEach((select,index)=>{
+document.querySelectorAll(".week1 td")
+.forEach((cell,index)=>{
 
-  if(select.value){
+ const select = cell.querySelector("select")
+ const hd = cell.querySelector(".hd")
 
-   const shift=JSON.parse(select.value)
+ if(select && select.value){
 
-   const day = (index + 1) % 7
-   const pay = calculateShiftPay(shift, rate, day)
+  const shift = JSON.parse(select.value)
 
-   week1+=pay
+  const day = (index + 1) % 7
+  let pay = calculateShiftPay(shift, rate, day)
+
+  if(hd && hd.checked){
+   pay *= 1.2
   }
 
- })
+  week1 += pay
+ }
+
+})
 
  // week2
- document.querySelectorAll(".week2 select")
- .forEach((select,index)=>{
+document.querySelectorAll(".week2 td")
+.forEach((cell,index)=>{
 
-  if(select.value){
+ const select = cell.querySelector("select")
+ const hd = cell.querySelector(".hd")
 
-   const shift=JSON.parse(select.value)
+ if(select && select.value){
 
-   const day = (index + 1) % 7
-   const pay = calculateShiftPay(shift, rate, day)
+  const shift = JSON.parse(select.value)
 
-   week2+=pay
+  const day = (index + 1) % 7
+  let pay = calculateShiftPay(shift, rate, day)
+
+  if(hd && hd.checked){
+   pay *= 1.2
   }
 
- })
+  week2 += pay
+ }
+
+})
 
  document.getElementById("week1Total")
  .innerText="$"+week1.toFixed(2)
