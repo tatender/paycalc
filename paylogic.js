@@ -235,8 +235,8 @@ document.querySelectorAll(".week2 .shift-cell")
 
  const gross = week1 + week2
 
-// simple estimated tax (adjustable later)
-const estimatedTaxRate = 0.30  // 30% rough estimate
+// simple estimated tax 
+const estimatedTaxRate = 0.22  // 22% rough estimate
 
 const net = gross * (1 - estimatedTaxRate)
 
