@@ -10,7 +10,9 @@ const shifts = [
  {label:"14:00 - 22:30", start:14, end:22.5},
  {label:"15:00 - 23:30", start:15, end:23.5},
  {label:"20:00 - 04:30", start:20, end:28.5},
- {label:"22:00 - 06:30", start:22, end:30.5}
+ {label:"22:00 - 06:30", start:22, end:30.5},
+ {label:"PL (Paid Leave)", start:10, end:18.5},
+ {label:"PH (Public Holiday)", start:10, end:18.5, isPH:true}
 ]
 
 // ----------------------------
@@ -181,7 +183,14 @@ document.querySelectorAll(".week1 .shift-cell")
   const shift = JSON.parse(select.value)
 
   const day = (index + 1) % 7
-  let pay = calculateShiftPay(shift, rate, day)
+  let pay
+
+  if(shift.isPH){
+    // flat 150% for 8 hours
+    pay = rate * 1.5 * 8
+  }else{
+    pay = calculateShiftPay(shift, rate, day)
+  }
 
   if(hd && hd.checked){
    pay *= 1.2
