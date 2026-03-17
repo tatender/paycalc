@@ -224,6 +224,16 @@ document.querySelectorAll(".week2 .shift-cell")
  document.getElementById("grossTotal")
  .innerText="$"+(week1+week2).toFixed(2)
 
+ const gross = week1 + week2
+
+// simple estimated tax (adjustable later)
+const estimatedTaxRate = 0.30  // 30% rough estimate
+
+const net = gross * (1 - estimatedTaxRate)
+
+document.getElementById("netTotal")
+.innerText = "$" + net.toFixed(2)
+
 }
 
 
