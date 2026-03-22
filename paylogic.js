@@ -1,8 +1,6 @@
 // ----------------------------
 // SHIFT DEFINITIONS
 // ----------------------------
-// start and end use 24 hour decimal time
-// overnight shifts extend past 24
 
 const shifts = [
  {label:"10:00 - 18:30", start:10, end:18.5},
@@ -19,8 +17,6 @@ const shifts = [
 // ----------------------------
 // PUBLIC HOLIDAYS
 // ----------------------------
-// format: YYYY-MM-DD
-// add or remove dates anytime
 
 const publicHolidays = [
 "2026-01-01",
@@ -43,104 +39,98 @@ shiftCells.forEach(cell=>{
 
  const select = document.createElement("select")
 
- // RDO option
- const blank=document.createElement("option")
- blank.value=""
- blank.text="RDO"
+ // RDO
+ const blank = document.createElement("option")
+ blank.value = ""
+ blank.text = "RDO"
  select.appendChild(blank)
 
- // add shifts
+ // shifts
  shifts.forEach(shift=>{
-  const option=document.createElement("option")
-  option.value=JSON.stringify(shift)
-  option.text=shift.label
+  const option = document.createElement("option")
+  option.value = JSON.stringify(shift)
+  option.text = shift.label
   select.appendChild(option)
  })
 
  select.addEventListener("change",calculateTotals)
 
-// HD checkbox
-const hdLabel = document.createElement("label")
-hdLabel.style.fontSize = "12px"
+ // HD checkbox
+ const hdLabel = document.createElement("label")
+ hdLabel.style.fontSize = "12px"
 
-const hdCheckbox = document.createElement("input")
-hdCheckbox.type = "checkbox"
-hdCheckbox.classList.add("hd")
-hdCheckbox.style.marginTop = "4px"
+ const hdCheckbox = document.createElement("input")
+ hdCheckbox.type = "checkbox"
+ hdCheckbox.classList.add("hd")
+ hdCheckbox.style.marginTop = "4px"
 
-hdCheckbox.addEventListener("change",calculateTotals)
+ hdCheckbox.addEventListener("change",calculateTotals)
 
-hdLabel.appendChild(hdCheckbox)
-hdLabel.append(" HD")
+ hdLabel.appendChild(hdCheckbox)
+ hdLabel.append(" HD")
 
-// OT checkbox
-const otLabel = document.createElement("label")
-otLabel.style.fontSize = "12px"
+ // OT checkbox
+ const otLabel = document.createElement("label")
+ otLabel.style.fontSize = "12px"
 
-const otCheckbox = document.createElement("input")
-otCheckbox.type = "checkbox"
-otCheckbox.classList.add("ot")
+ const otCheckbox = document.createElement("input")
+ otCheckbox.type = "checkbox"
+ otCheckbox.classList.add("ot")
 
-otCheckbox.addEventListener("change",calculateTotals)
+ otCheckbox.addEventListener("change",calculateTotals)
 
-otLabel.appendChild(otCheckbox)
-otLabel.append(" OT")
+ otLabel.appendChild(otCheckbox)
+ otLabel.append(" OT")
 
-wrapper.appendChild(select)
-wrapper.appendChild(hdLabel)
-wrapper.appendChild(otLabel)
+ // append everything
+ wrapper.appendChild(select)
+ wrapper.appendChild(hdLabel)
+ wrapper.appendChild(otLabel)
+
+ cell.appendChild(wrapper) // ✅ IMPORTANT FIX
+})
+
+document.getElementById("serviceRate")
+.addEventListener("change",calculateTotals)
 
 
 // ----------------------------
-// PENALTY MULTIPLIER FUNCTION
+// PENALTY MULTIPLIER
 // ----------------------------
 
 function getMultiplier(day,hour){
 
-// Sat 20:00 → Mon 07:00
-if(
- (day===6 && hour>=20) ||
- day===0 ||
- (day===1 && hour<7)
-){
- return 1.5
-}
+ if(
+  (day===6 && hour>=20) ||
+  day===0 ||
+  (day===1 && hour<7)
+ ){
+  return 1.5
+ }
 
-// Saturday daytime
-if(day===6){
- if(hour>=7 && hour<19) return 1.25
- return 1.5
-}
+ if(day===6){
+  if(hour>=7 && hour<19) return 1.25
+  return 1.5
+ }
 
-// Friday
-if(day===5){
- if(hour>=19) return 1.5
- if(hour<7) return 1.15
+ if(day===5){
+  if(hour>=19) return 1.5
+  if(hour<7) return 1.15
+  return 1
+ }
+
+ if(day>=1 && day<=4){
+  if(hour>=19) return 1.15
+  if(hour<7) return 1.15
+  return 1
+ }
+
  return 1
 }
 
-// Monday–Thursday
-if(day>=1 && day<=4){
- if(hour>=19) return 1.15
- if(hour<7) return 1.15
- return 1
-}
-
-return 1
-}
-
 
 // ----------------------------
-// CHECK IF PUBLIC HOLIDAY
-// ----------------------------
-
-function isPublicHoliday(dateString){
- return publicHolidays.includes(dateString)
-}
-
-
-// ----------------------------
-// CALCULATE PAY FOR ONE SHIFT
+// CALCULATE SHIFT PAY
 // ----------------------------
 
 function calculateShiftPay(shift, rate, startDay) {
@@ -157,12 +147,12 @@ function calculateShiftPay(shift, rate, startDay) {
     pay += rate * multiplier * 0.5
   }
 
-  // subtract unpaid 30 min
-  // assume last multiplier applies for simplicity
+  // minus unpaid 30 min
   const lastHour = (shift.end - 0.5) % 24
   const lastDayOffset = Math.floor((shift.start + (shift.end - shift.start - 0.5)) / 24)
   const lastDay = (startDay + lastDayOffset) % 7
   const lastMultiplier = getMultiplier(lastDay, lastHour)
+
   pay -= rate * lastMultiplier * 0.5
 
   return pay
@@ -175,118 +165,90 @@ function calculateShiftPay(shift, rate, startDay) {
 
 function calculateTotals(){
 
- let week1=0
- let week2=0
+ let week1 = 0
+ let week2 = 0
 
- const rate=parseFloat(document.getElementById("serviceRate").value)
+ const rate = parseFloat(document.getElementById("serviceRate").value)
 
- // week1
-document.querySelectorAll(".week1 .shift-cell")
-.forEach((cell,index)=>{
+ // WEEK 1
+ document.querySelectorAll(".week1 .shift-cell")
+ .forEach((cell,index)=>{
 
- const select = cell.querySelector("select")
- const hd = cell.querySelector(".hd")
- const ot = cell.querySelector(".ot")
+  const select = cell.querySelector("select")
+  const hd = cell.querySelector(".hd")
+  const ot = cell.querySelector(".ot")
 
- if(select && select.value){
+  if(select && select.value){
 
-  const shift = JSON.parse(select.value)
+   const shift = JSON.parse(select.value)
+   const day = (index + 1) % 7
 
-  const day = (index + 1) % 7
-  let pay
+   let pay
 
-  if(shift.isAL){
-    // Annual Leave = 117% flat for 8 hours
-    pay = rate * 1.17 * 8
-  
-  }else if(shift.isPH){
-    // Public Holiday
-    pay = rate * 1.5 * 8
-  
-  }else{
-    pay = calculateShiftPay(shift, rate, day)
+   if(shift.isAL){
+     pay = rate * 1.17 * 8
+   }else if(shift.isPH){
+     pay = rate * 1.5 * 8
+   }else{
+     pay = calculateShiftPay(shift, rate, day)
+   }
+
+   if(hd && hd.checked){
+     pay *= 1.2
+   }
+
+   if(ot && ot.checked){
+     pay *= 2
+   }
+
+   week1 += pay // ✅ FIXED
   }
-  
-  // HD
-  if(hd && hd.checked){
-    pay *= 1.2
+ })
+
+ // WEEK 2
+ document.querySelectorAll(".week2 .shift-cell")
+ .forEach((cell,index)=>{
+
+  const select = cell.querySelector("select")
+  const hd = cell.querySelector(".hd")
+  const ot = cell.querySelector(".ot")
+
+  if(select && select.value){
+
+   const shift = JSON.parse(select.value)
+   const day = (index + 1) % 7
+
+   let pay
+
+   if(shift.isAL){
+     pay = rate * 1.17 * 8
+   }else if(shift.isPH){
+     pay = rate * 1.5 * 8
+   }else{
+     pay = calculateShiftPay(shift, rate, day)
+   }
+
+   if(hd && hd.checked){
+     pay *= 1.2
+   }
+
+   if(ot && ot.checked){
+     pay *= 2
+   }
+
+   week2 += pay // ✅ FIXED
   }
-  
-  // OT (adds extra 100%)
-  if(ot && ot.checked){
-    pay *= 2
-  }
+ })
 
-})
-
- // week2
-document.querySelectorAll(".week2 .shift-cell")
-.forEach((cell,index)=>{
-
- const select = cell.querySelector("select")
- const hd = cell.querySelector(".hd")
- const ot = cell.querySelector(".ot")
-
- if(select && select.value){
-
-  const shift = JSON.parse(select.value)
-
-  const day = (index + 1) % 7
-  let pay
-
-  if(shift.isAL){
-    // Annual Leave = 117% flat for 8 hours
-    pay = rate * 1.17 * 8
-  
-  }else if(shift.isPH){
-    // Public Holiday
-    pay = rate * 1.5 * 8
-  
-  }else{
-    pay = calculateShiftPay(shift, rate, day)
-  }
-  
-  // HD
-  if(hd && hd.checked){
-    pay *= 1.2
-  }
-  
-  // OT (adds extra 100%)
-  if(ot && ot.checked){
-    pay *= 2
-  }
-
-})
-
- document.getElementById("week1Total")
- .innerText="$"+week1.toFixed(2)
-
- document.getElementById("week2Total")
- .innerText="$"+week2.toFixed(2)
-
- document.getElementById("grossTotal")
- .innerText="$"+(week1+week2).toFixed(2)
+ // totals
+ document.getElementById("week1Total").innerText = "$" + week1.toFixed(2)
+ document.getElementById("week2Total").innerText = "$" + week2.toFixed(2)
 
  const gross = week1 + week2
 
-// simple estimated tax 
-const estimatedTaxRate = 0.22  // 22% rough estimate
+ document.getElementById("grossTotal").innerText = "$" + gross.toFixed(2)
 
-const net = gross * (1 - estimatedTaxRate)
+ const net = gross * 0.78
 
-document.getElementById("netTotal")
-.innerText = "$" + net.toFixed(2)
-
+ document.getElementById("netTotal").innerText = "$" + net.toFixed(2)
 }
-
-
-
-
-
-
-
-
-
-
-
-
