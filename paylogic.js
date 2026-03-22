@@ -12,7 +12,8 @@ const shifts = [
  {label:"20:00 - 04:30", start:20, end:28.5},
  {label:"22:00 - 06:30", start:22, end:30.5},
  {label:"PL (Paid Leave)", start:10, end:18.5},
- {label:"PH (Public Holiday)", start:10, end:18.5, isPH:true}
+ {label:"PH (Public Holiday)", start:10, end:18.5, isPH:true},
+ {label:"AL (Annual Leave)", isAL:true}
 ]
 
 // ----------------------------
@@ -58,28 +59,36 @@ shiftCells.forEach(cell=>{
 
  select.addEventListener("change",calculateTotals)
 
- // HD checkbox
- const hdLabel = document.createElement("label")
- hdLabel.style.fontSize = "12px"
+// HD checkbox
+const hdLabel = document.createElement("label")
+hdLabel.style.fontSize = "12px"
 
- const hdCheckbox = document.createElement("input")
- hdCheckbox.type = "checkbox"
- hdCheckbox.classList.add("hd")
- hdCheckbox.style.marginTop = "4px"
+const hdCheckbox = document.createElement("input")
+hdCheckbox.type = "checkbox"
+hdCheckbox.classList.add("hd")
+hdCheckbox.style.marginTop = "4px"
 
- hdCheckbox.addEventListener("change",calculateTotals)
+hdCheckbox.addEventListener("change",calculateTotals)
 
- hdLabel.appendChild(hdCheckbox)
- hdLabel.append(" HD")
+hdLabel.appendChild(hdCheckbox)
+hdLabel.append(" HD")
 
- wrapper.appendChild(select)
- wrapper.appendChild(hdLabel)
+// OT checkbox
+const otLabel = document.createElement("label")
+otLabel.style.fontSize = "12px"
 
- cell.appendChild(wrapper)
+const otCheckbox = document.createElement("input")
+otCheckbox.type = "checkbox"
+otCheckbox.classList.add("ot")
 
-})
-document.getElementById("serviceRate")
-.addEventListener("change",calculateTotals)
+otCheckbox.addEventListener("change",calculateTotals)
+
+otLabel.appendChild(otCheckbox)
+otLabel.append(" OT")
+
+wrapper.appendChild(select)
+wrapper.appendChild(hdLabel)
+wrapper.appendChild(otLabel)
 
 
 // ----------------------------
@@ -177,6 +186,7 @@ document.querySelectorAll(".week1 .shift-cell")
 
  const select = cell.querySelector("select")
  const hd = cell.querySelector(".hd")
+ const ot = cell.querySelector(".ot")
 
  if(select && select.value){
 
@@ -185,19 +195,27 @@ document.querySelectorAll(".week1 .shift-cell")
   const day = (index + 1) % 7
   let pay
 
-  if(shift.isPH){
-    // flat 150% for 8 hours
+  if(shift.isAL){
+    // Annual Leave = 117% flat for 8 hours
+    pay = rate * 1.17 * 8
+  
+  }else if(shift.isPH){
+    // Public Holiday
     pay = rate * 1.5 * 8
+  
   }else{
     pay = calculateShiftPay(shift, rate, day)
   }
-
+  
+  // HD
   if(hd && hd.checked){
-   pay *= 1.2
+    pay *= 1.2
   }
-
-  week1 += pay
- }
+  
+  // OT (adds extra 100%)
+  if(ot && ot.checked){
+    pay *= 2
+  }
 
 })
 
@@ -207,20 +225,36 @@ document.querySelectorAll(".week2 .shift-cell")
 
  const select = cell.querySelector("select")
  const hd = cell.querySelector(".hd")
+ const ot = cell.querySelector(".ot")
 
  if(select && select.value){
 
   const shift = JSON.parse(select.value)
 
   const day = (index + 1) % 7
-  let pay = calculateShiftPay(shift, rate, day)
+  let pay
 
-  if(hd && hd.checked){
-   pay *= 1.2
+  if(shift.isAL){
+    // Annual Leave = 117% flat for 8 hours
+    pay = rate * 1.17 * 8
+  
+  }else if(shift.isPH){
+    // Public Holiday
+    pay = rate * 1.5 * 8
+  
+  }else{
+    pay = calculateShiftPay(shift, rate, day)
   }
-
-  week2 += pay
- }
+  
+  // HD
+  if(hd && hd.checked){
+    pay *= 1.2
+  }
+  
+  // OT (adds extra 100%)
+  if(ot && ot.checked){
+    pay *= 2
+  }
 
 })
 
