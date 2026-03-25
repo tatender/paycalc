@@ -198,8 +198,8 @@ function calculateTotals(){
    }
 
    if(ot && ot.checked){
-     pay *= 2
-   }
+  pay += rate * 2 * 2
+  }
 
    week1 += pay // ✅ FIXED
   }
@@ -233,7 +233,7 @@ function calculateTotals(){
    }
 
    if(ot && ot.checked){
-     pay *= 2
+  pay += rate * 2 * 2
    }
 
    week2 += pay // ✅ FIXED
