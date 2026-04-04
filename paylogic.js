@@ -14,15 +14,6 @@ const shifts = [
  {label:"AL (Annual Leave)", isAL:true}
 ]
 
-// ----------------------------
-// PUBLIC HOLIDAYS
-// ----------------------------
-
-const publicHolidays = [
-"2026-01-01",
-"2026-01-26",
-"2026-12-25"
-]
 
 // ----------------------------
 // BUILD SHIFT DROPDOWNS
@@ -87,7 +78,7 @@ shiftCells.forEach(cell=>{
  wrapper.appendChild(hdLabel)
  wrapper.appendChild(otLabel)
 
- cell.appendChild(wrapper) // ✅ IMPORTANT FIX
+ cell.appendChild(wrapper) 
 })
 
 document.getElementById("serviceRate")
@@ -188,7 +179,7 @@ function calculateTotals(){
    if(shift.isAL){
      pay = rate * 1.17 * 8
    }else if(shift.isPH){
-     pay = rate * 1.5 * 8
+     pay = rate * 2.5 * 8
    }else{
      pay = calculateShiftPay(shift, rate, day)
    }
@@ -201,7 +192,7 @@ function calculateTotals(){
   pay += rate * 2 * 2
   }
 
-   week1 += pay // ✅ FIXED
+   week1 += pay 
   }
  })
 
@@ -223,7 +214,7 @@ function calculateTotals(){
    if(shift.isAL){
      pay = rate * 1.17 * 8
    }else if(shift.isPH){
-     pay = rate * 1.5 * 8
+     pay = rate * 2.5 * 8
    }else{
      pay = calculateShiftPay(shift, rate, day)
    }
@@ -236,7 +227,7 @@ function calculateTotals(){
   pay += rate * 2 * 2
    }
 
-   week2 += pay // ✅ FIXED
+   week2 += pay 
   }
  })
 
